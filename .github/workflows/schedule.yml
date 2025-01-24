@@ -1,0 +1,29 @@
+name: schedule
+
+on:
+  workflow_dispatch: #수동으로 돌려본다
+  schedule:
+    - cron: '0 * * * *'
+      # https://crontab.guru/
+      # 15 * * * * : 15분마다 설정
+      # 일반적으로 30분 정도 이상의 턴을 둬야함
+
+jobs:
+  make-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 노드 셋업
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: index.js 실행
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} #이거 일치하는지
+        run: node index.js
